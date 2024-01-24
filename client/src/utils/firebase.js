@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getDownloadURL, getStorage, uploadBytesResumable,ref } from 'firebase/storage'
 import { getAuth,GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -21,5 +22,6 @@ provider.setCustomParameters({
   prompt : "select_account"
 });
 
-export const auth = getAuth();
+export const auth = getAuth(firebaseApp);
+export const storage = getStorage(firebaseApp);
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
