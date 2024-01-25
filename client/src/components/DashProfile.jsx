@@ -15,9 +15,10 @@ import {
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from 'react-router-dom';
 
 export default function DashProfile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser,loading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
@@ -89,7 +90,7 @@ export default function DashProfile() {
 
   const handleChangeInput = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
-  };    
+  };
 
   const handleSubmitUpdateUser = async (e) => {
     e.preventDefault();
@@ -130,36 +131,36 @@ export default function DashProfile() {
   const handleDeleteAccount = async () => {
     setShowModalDeleteUser(false);
     try {
-        dispatch(deleteStart());
-        const res = await fetch(`api/user/delete/${currentUser._id}`, {
-            method: "DELETE",
-        })
-        const data = await res.json();
-        if(!res.ok) {
-            dispatch(deleteFailure(data.message));
-        } else {
-            dispatch(deleteSuccess(data));
-        }
+      dispatch(deleteStart());
+      const res = await fetch(`api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(deleteFailure(data.message));
+      } else {
+        dispatch(deleteSuccess(data));
+      }
     } catch (error) {
-        dispatch(deleteFailure(error.message));
+      dispatch(deleteFailure(error.message));
     }
-  }
+  };
 
   const handleSignout = async () => {
     try {
-        const res = await fetch('api/user/signout', {
-            method: "POST",
-        })
-        const data = await res.json();
-        if(!res.ok) {
-            console.log(data.message);
-        } else {
-            dispatch(signoutSuccess());
-        }
+      const res = await fetch("api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+      }
     } catch (error) {
-        console.log(error.message);
+      console.log(error.message);
     }
-  }
+  };
 
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -229,9 +230,25 @@ export default function DashProfile() {
           id="password"
           placeholder="password"
         />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Update
+        <Button 
+          type="submit" 
+          gradientDuoTone="purpleToBlue" 
+          outline
+          disabled={loading || imageFileUploadLoading}
+        >
+          {loading ? 'Loading...' : 'Update'}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={'/create-post'}>
+            <Button
+              type="button"
+              gradientDuoTone="purpleToPink"
+              className="w-full"
+            >
+              Create a Post
+            </Button>
+          </Link>
+        )}
       </form>
       <div className="text-red-500 flex justify-between mt-5">
         <span
@@ -240,7 +257,9 @@ export default function DashProfile() {
         >
           Delete Account
         </span>
-        <span className="cursor-pointer" onClick={handleSignout}>Sign Out</span>
+        <span className="cursor-pointer" onClick={handleSignout}>
+          Sign Out
+        </span>
       </div>
       {updateUserSuccess && (
         <Alert color="success" className="mt-5">
