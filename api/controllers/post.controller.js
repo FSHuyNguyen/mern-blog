@@ -50,38 +50,67 @@ export const getPosts = async (req, res, next) => {
       .skip(startIndex)
       .limit(limit);
 
-      const totalPosts = await Post.countDocuments();
+    const totalPosts = await Post.countDocuments();
 
-      const now = new Date();
+    const now = new Date();
 
-      const oneMonthAgo = new Date(
-        now.getFullYear(),
-        now.getMonth() - 1,
-        now.getDate()
-      );
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
 
-      const lastMonthPosts = await Post.countDocuments({
-        createdAt: { $gte: oneMonthAgo },
-      })
+    const lastMonthPosts = await Post.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
 
-      res.status(200).json({
-        posts,
-        totalPosts,
-        lastMonthPosts,
-      })
+    res.status(200).json({
+      posts,
+      totalPosts,
+      lastMonthPosts,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-
-export const deletePost = async (req, res,next) => {
-  if(!req.user.isAdmin || (req.user.id !== req.params.userId)) {
-    return next(errorHandler(403, 'You are not allowed to delete this post'));
+export const deletePost = async (req, res, next) => {
+  if (!req.user.isAdmin || (req.user.id !== req.params.userId)) {
+    return next(errorHandler(403, "You are not allowed to delete this post"));
   }
   try {
-    await Post.findByIdAndDelete(req.params.userId);
-    res.status(200).json('The post has been deleted');
+    await Post.findByIdAndDelete(req.params.postId);
+    res.status(200).json("The post has been deleted");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePost = async (req, res, next) => {
+  if (!req.user.isAdmin || (req.user.id !== req.params.userId)) {
+    return next(errorHandler(403, "You are not allowed to delete this post"));
+  }
+
+  try {
+    // const slug = req.body.title
+    // .split(" ")
+    // .join("-")
+    // .toLowerCase()
+    // .replace(/[^a-zA-Z0-9-]/g, "");
+    // console.log("slug ",slug);
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          image: req.body.image,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedPost);
   } catch (error) {
     next(error);
   }
