@@ -18,17 +18,17 @@ body {
     font-size: 1.5rem;
     font-weight: 600;
     font-family: sans-serif;
-    margin: 1.5rem 0;
+    margin: 1.2rem 0;
 }
 
 .post-content h2 {
     font-size: 1.4rem;
     font-family: sans-serif;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
 }
 
 .post-content a {
-   color: rgb(73, 149, 199);
+   color: rgb(73, 149, 199) !important;
    text-decoration: none;
 }
 
@@ -37,5 +37,30 @@ body {
 }
 
 .dark .post-content a {
-    color: red;
+    color: #4AD295 !important;
+}
+
+.ql-syntax {
+    background: rgb(40, 44, 52);
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    overflow: auto;
+    tab-size: 1.5em;
+    margin: 25px -30px;
+    padding: 15px;
+}
+
+code {
+    color: #e83e8c !important;
+    word-break: break-word;
+}
+
+.dark p code {
+    padding: 2px 5px;
+    color: #e83e8c !important;
+}
+
+li {
+    max-width: 42rem;
+    word-wrap: break-word;
 }
