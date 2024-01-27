@@ -82,7 +82,7 @@ export default function DashUsers() {
               <Table.Body className="divide-y" key={user._id}>
                 <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
                   <Table.Cell>
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    {new Date(user.createdAt).toLocaleDateString('en-GB')}
                   </Table.Cell>
                   <Table.Cell>
                     <img
